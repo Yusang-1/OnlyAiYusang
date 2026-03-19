@@ -1,5 +1,7 @@
 ---
+description: 
 alwaysApply: true
 ---
 
 - public 변수는 앞글자를 대문자로
+- 인스펙터에서 할당할 변수는 [SeralizeField]를 붙이고 private 접근제한자 사용
