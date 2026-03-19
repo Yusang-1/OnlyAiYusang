@@ -4,8 +4,8 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement Settings")]
-    public float rollSpeed = 360f;    // 한 번 구를 때 회전 속도(도/초)
-    public float rollDelay = 0.1f;    // 한 번 구른 후 다음 구르기까지 대기 시간(초)
+    [SerializeField] private float rollSpeed = 360f;    // 한 번 구를 때 회전 속도(도/초)
+    [SerializeField] private float rollDelay = 0.1f;    // 한 번 구른 후 다음 구르기까지 대기 시간(초)
 
     private Vector2 _moveInput;       // WASD 입력 (Vector2)
     private Vector3 _moveDirection;   // 실제 이동 방향 (대각선 제거 후)

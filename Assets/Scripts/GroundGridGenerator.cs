@@ -2,19 +2,20 @@ using UnityEngine;
 
 public class GroundGridGenerator : MonoBehaviour
 {
-    public int width = 20;
-    public int depth = 20;
-    public float spacing = 1f;
+    [SerializeField] private int width = 20;
+    [SerializeField] private int depth = 20;
+    [SerializeField] private float spacing = 1f;
 
-    public float cellY = 0f;
-    public int originCellX = 1; // (1,1) -> (0, cellY, 0)
-    public int originCellZ = 1;
+    [SerializeField] private float cellY = 0f;
+    [SerializeField] private int originCellX = 1; // (1,1) -> (0, cellY, 0)
+    [SerializeField] private int originCellZ = 1;
 
     [Header("Cell Prefab")]
-    public GameObject cellPrefab;
+    [SerializeField] private GameObject cellPrefab;
 
     // 필요하면 외부에서 접근할 수 있도록 배열도 보관
-    public Cell[,] cells;
+    private Cell[,] _cells;
+    public Cell[,] Cells => _cells;
 
     private void Start()
     {
@@ -35,7 +36,7 @@ public class GroundGridGenerator : MonoBehaviour
             Destroy(transform.GetChild(i).gameObject);
         }
 
-        cells = new Cell[width, depth];
+        _cells = new Cell[width, depth];
 
         for (int x = 0; x < width; x++)
         {
@@ -50,7 +51,7 @@ public class GroundGridGenerator : MonoBehaviour
                 cell.transform.position = new Vector3(worldX, cellY, worldZ);
                 cell.transform.rotation = Quaternion.identity;
 
-                cells[x, z] = cell.GetComponent<Cell>();
+                _cells[x, z] = cell.GetComponent<Cell>();
             }
         }
     }
