@@ -1,20 +1,81 @@
 using UnityEngine;
+using System.Collections;
+using System;
 
 public class Cell : MonoBehaviour
 {
     // 해당 셀로 이동 가능 여부
     private bool isAvailable = true;
 
+    private Coroutine _restoreCoroutine;
+
+    [Header("Cell Colors")]
+    [SerializeField] private Color availableColor = Color.white;
+    [SerializeField] private Color unavailableColor = Color.red;
+    private CellColorApplier _colorApplier;
+
+    private Renderer _renderer;
+
+    public event Action<Cell, bool> AvailabilityChanged;
+
     // 외부에서는 읽기만, 변경은 Cell 내부 메서드로만
     public bool IsAvailable
     {
         get => isAvailable;
-        private set => isAvailable = value;
+        private set
+        {
+            if (isAvailable == value)
+                return;
+
+            isAvailable = value;
+            ApplyColor();
+            AvailabilityChanged?.Invoke(this, isAvailable);
+        }
+    }
+
+    private void Awake()
+    {
+        _renderer = GetComponentInChildren<Renderer>(true);
+        _colorApplier = new CellColorApplier();
+        _colorApplier.Initialize(_renderer, availableColor, unavailableColor);
     }
 
     // 셀 접근 가능 여부를 변경하는 공용 메서드
-    public void SetAvailable(bool available)
+    public void SetAvailable(float secondsUntilAvailable)
     {
-        IsAvailable = available;
+        // 요청사항: SetAvailable 호출 시 isAvailable은 'false'로만 바뀌며,
+        // 일정 시간 이후 자동으로 true로 복구된다.
+        IsAvailable = false;
+
+        if (_restoreCoroutine != null)
+            StopCoroutine(_restoreCoroutine);
+
+        _restoreCoroutine = StartCoroutine(RestoreAvailableAfterSeconds(secondsUntilAvailable));
+    }
+
+    private const float ZeroSeconds = 0f;
+
+    private IEnumerator RestoreAvailableAfterSeconds(float secondsUntilAvailable)
+    {
+        float delaySeconds = Mathf.Max(secondsUntilAvailable, ZeroSeconds);
+        if (delaySeconds > ZeroSeconds)
+            yield return new WaitForSeconds(delaySeconds);
+
+        IsAvailable = true;
+        _restoreCoroutine = null;
+    }
+
+    private void ApplyColor()
+    {
+        if (_colorApplier == null)
+            return;
+
+        _colorApplier.SetAvailable(isAvailable, availableColor, unavailableColor);
+    }
+
+    private void Start()
+    {
+        // Awake에서 applier 준비 후, 초기 상태 반영
+        ApplyColor();
     }
 }

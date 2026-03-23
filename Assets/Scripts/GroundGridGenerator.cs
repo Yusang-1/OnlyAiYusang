@@ -1,7 +1,10 @@
+using System;
 using UnityEngine;
 
 public class GroundGridGenerator : MonoBehaviour
 {
+    public event Action<Cell[,]> GridBuilt;
+
     [SerializeField] private int width = 20;
     [SerializeField] private int depth = 20;
     [SerializeField] private float spacing = 1f;
@@ -16,6 +19,9 @@ public class GroundGridGenerator : MonoBehaviour
     // 필요하면 외부에서 접근할 수 있도록 배열도 보관
     private Cell[,] _cells;
     public Cell[,] Cells => _cells;
+    public bool IsBuilt => _isBuilt;
+
+    private bool _isBuilt;
 
     private void Start()
     {
@@ -26,6 +32,8 @@ public class GroundGridGenerator : MonoBehaviour
         }
 
         BuildGrid();
+        _isBuilt = true;
+        GridBuilt?.Invoke(_cells);
     }
 
     private void BuildGrid()
