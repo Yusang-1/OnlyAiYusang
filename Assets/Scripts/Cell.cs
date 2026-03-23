@@ -18,6 +18,14 @@ public class Cell : MonoBehaviour
 
     public event Action<Cell, bool> AvailabilityChanged;
 
+    // coin 상태 저장 (CoinController가 추가/제거, PlayerController가 획득)
+    private bool _hasCoin;
+
+    public bool HasCoin => _hasCoin;
+
+    // coin이 획득될 때만 발생합니다.
+    public event Action<Cell> CoinCollected;
+
     // 외부에서는 읽기만, 변경은 Cell 내부 메서드로만
     public bool IsAvailable
     {
@@ -71,6 +79,24 @@ public class Cell : MonoBehaviour
             return;
 
         _colorApplier.SetAvailable(isAvailable, availableColor, unavailableColor);
+    }
+
+    // CoinController가 coin의 존재 여부를 "표시"할 때 사용합니다.
+    public void SetCoinPresence(bool hasCoin)
+    {
+        _hasCoin = hasCoin;
+    }
+
+    // PlayerController가 획득 처리할 때 사용합니다.
+    // 성공(true)일 때만 CoinCollected 이벤트가 발생합니다.
+    public bool TryCollectCoin()
+    {
+        if (!_hasCoin)
+            return false;
+
+        _hasCoin = false;
+        CoinCollected?.Invoke(this);
+        return true;
     }
 
     private void Start()

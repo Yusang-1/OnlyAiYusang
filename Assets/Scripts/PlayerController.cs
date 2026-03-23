@@ -10,6 +10,10 @@ public class PlayerController : MonoBehaviour
     [Header("Grid (Cell Availability)")]
     [SerializeField] private CellController cellController;
 
+    [Header("Score (Coin)")]
+    [SerializeField] private int score = 0;
+    public int Score => score;
+
     private Rigidbody _rb;
     private BoxCollider _boxCollider;
     private bool _isRolling;
@@ -146,10 +150,14 @@ public class PlayerController : MonoBehaviour
 
             // 이동 시작 시점에선 가능했더라도, 롤 중에 셀이 비활성화될 수 있으니
             // 마지막에 한번 더 확인합니다.
-            if (targetCell != null && !targetCell.IsAvailable)
-                transform.position = startPos;
-            else
-                transform.position = expectedPos;
+            bool movedToTargetCell = !(targetCell != null && !targetCell.IsAvailable);
+            transform.position = movedToTargetCell ? expectedPos : startPos;
+
+            if (movedToTargetCell && targetCell != null && targetCell.HasCoin)
+            {
+                if (targetCell.TryCollectCoin())
+                    score += 1;
+            }
         }
         finally
         {

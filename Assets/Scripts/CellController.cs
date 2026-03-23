@@ -386,6 +386,49 @@ public class CellController : MonoBehaviour
         }
     }
 
+    public bool IsReadyForCoin
+    {
+        get
+        {
+            return _grid != null && _cells != null && _cells.Length > ZeroInt;
+        }
+    }
+
+    /// <summary>
+    /// CoinController가 사용할 랜덤 셀 선택용 API입니다.
+    /// </summary>
+    public bool TryGetRandomCell(out Cell cell, bool mustBeAvailable = true)
+    {
+        cell = null;
+
+        if (_cells == null || _cells.Length == ZeroInt)
+            return false;
+
+        if (mustBeAvailable)
+        {
+            if (_availableCells == null || _availableCells.Count == ZeroInt)
+                return false;
+
+            // null 방어 (이론상 _availableCells에는 null이 없지만 안전하게 1회 재시도)
+            int chosenIndex = Random.Range(ZeroInt, _availableCells.Count);
+            cell = _availableCells[chosenIndex];
+            if (cell != null)
+                return true;
+
+            return false;
+        }
+
+        int availableCount = _availableCells != null ? _availableCells.Count : ZeroInt;
+        int unavailableCount = _unavailableCells != null ? _unavailableCells.Count : ZeroInt;
+        int totalCount = availableCount + unavailableCount;
+        if (totalCount == ZeroInt)
+            return false;
+
+        int r = Random.Range(ZeroInt, totalCount);
+        cell = r < availableCount ? _availableCells[r] : _unavailableCells[r - availableCount];
+        return cell != null;
+    }
+
     /// <summary>
     /// 현재 월드좌표가 어떤 셀 중심에 가장 가까운지 찾습니다.
     /// </summary>
