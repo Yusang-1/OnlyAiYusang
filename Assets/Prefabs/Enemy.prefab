@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 9172364256908131347}
   - component: {fileID: 2988082420226849753}
   - component: {fileID: 3576125719782338978}
+  - component: {fileID: 2017911653466804098}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -156,3 +157,21 @@ MonoBehaviour:
   useAStarAI: 1
   maxSearchNodes: 2048
   playerTransform: {fileID: 0}
+--- !u!114 &2017911653466804098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9178467664176746402}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35dbcfc9328836f40ac25b2d1acb908d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyController: {fileID: 0}
+  cellController: {fileID: 0}
+  playerTransform: {fileID: 0}
+  chaseEnterDistance: 4
+  chaseExitDistance: 5
+  decisionIntervalSeconds: 0.2

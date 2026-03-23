@@ -20,6 +20,15 @@ public abstract class EnemyControllerBase : MonoBehaviour
 
     private Coroutine _aiLoop;
 
+    // 상태머신이 런타임에 켜고/끄는 AI 활성 플래그.
+    // false이면 이동(새 롤)만 막고, 현재 굴림은 끝나도록(_isRolling 기준) 둡니다.
+    private bool _runtimeAIEnabled = false;
+
+    public void SetRuntimeAIEnabled(bool enabled)
+    {
+        _runtimeAIEnabled = enabled;
+    }
+
     protected static readonly Vector3[] CardinalDirections =
     {
         Vector3.forward,
@@ -48,9 +57,6 @@ public abstract class EnemyControllerBase : MonoBehaviour
 
     private void OnEnable()
     {
-        if (!IsAIEnabled())
-            return;
-
         if (_aiLoop != null)
             StopCoroutine(_aiLoop);
 
@@ -71,15 +77,18 @@ public abstract class EnemyControllerBase : MonoBehaviour
         {
             if (!_isRolling)
             {
-                if (TryGetCurrentCell(out Cell startCell))
+                if (_runtimeAIEnabled && IsAIModeEnabled())
                 {
-                    if (TryGetNextTargetCell(startCell, out Cell nextCell))
+                    if (TryGetCurrentCell(out Cell startCell))
                     {
-                        if (nextCell != null && nextCell.IsAvailable)
+                        if (TryGetNextTargetCell(startCell, out Cell nextCell))
                         {
-                            Vector3 moveDirection = GetDirectionToNeighbor(startCell, nextCell);
-                            if (moveDirection != Vector3.zero)
-                                TryStartRoll(moveDirection, nextCell);
+                            if (nextCell != null && nextCell.IsAvailable)
+                            {
+                                Vector3 moveDirection = GetDirectionToNeighbor(startCell, nextCell);
+                                if (moveDirection != Vector3.zero)
+                                    TryStartRoll(moveDirection, nextCell);
+                            }
                         }
                     }
                 }
@@ -142,7 +151,7 @@ public abstract class EnemyControllerBase : MonoBehaviour
         return targetCell.IsAvailable;
     }
 
-    protected abstract bool IsAIEnabled();
+    protected abstract bool IsAIModeEnabled();
 
     // startCell은 현재 위치 셀입니다. nextCell은 base에서 direction 변환 및 롤 실행까지 담당합니다.
     protected abstract bool TryGetNextTargetCell(Cell startCell, out Cell nextCell);

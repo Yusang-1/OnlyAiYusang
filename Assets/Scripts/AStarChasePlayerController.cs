@@ -23,7 +23,7 @@ public class AStarChasePlayerController : EnemyControllerBase
     // 하드코딩 숫자를 상수로 분리 (규칙 준수)
     private const float MinInputSqrMagnitude = 0.01f;
 
-    protected override bool IsAIEnabled()
+    protected override bool IsAIModeEnabled()
     {
         return useAStarAI;
     }

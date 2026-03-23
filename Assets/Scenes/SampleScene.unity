@@ -845,8 +845,8 @@ GameObject:
   - component: {fileID: 5106681660142621343}
   - component: {fileID: 3650273664112639795}
   - component: {fileID: 7247810356057209081}
-  - component: {fileID: 8953819452996694658}
   - component: {fileID: 8953819452996694659}
+  - component: {fileID: 8953819452996694660}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -955,18 +955,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8953819452996694658
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3639717230397099138}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8953819452996694659
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -986,6 +974,24 @@ MonoBehaviour:
   useAStarAI: 1
   maxSearchNodes: 2048
   playerTransform: {fileID: 0}
+--- !u!114 &8953819452996694660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3639717230397099138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35dbcfc9328836f40ac25b2d1acb908d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyController: {fileID: 8953819452996694659}
+  cellController: {fileID: 1150971409}
+  playerTransform: {fileID: 1455600318403437761}
+  chaseEnterDistance: 4
+  chaseExitDistance: 5
+  decisionIntervalSeconds: 0.2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
