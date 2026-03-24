@@ -70,6 +70,11 @@ public class CellController : MonoBehaviour
 
     private void OnDisable()
     {
+        ResetControllerState();
+    }
+
+    public void ResetControllerState()
+    {
         if (groundGridGenerator != null)
             groundGridGenerator.GridBuilt -= HandleGridBuilt;
 
@@ -91,6 +96,9 @@ public class CellController : MonoBehaviour
         _gridDepth = ZeroInt;
         _cellToIndex.Clear();
         _positionToleranceSqr = 0.35f * 0.35f;
+
+        if (groundGridGenerator != null)
+            groundGridGenerator.GridBuilt += HandleGridBuilt;
     }
 
     private void HandleGridBuilt(Cell[,] grid)

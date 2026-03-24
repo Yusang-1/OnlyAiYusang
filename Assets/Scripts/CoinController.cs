@@ -20,21 +20,26 @@ public class CoinController : MonoBehaviour
     private Cell _currentCell;
     private GameObject _coinInstance;
 
+    private Coroutine _setupCoroutine;
     private Coroutine _timeoutCoroutine;
 
     private void Start()
     {
-        if (coinPrefab == null)
-        {
-            Debug.LogError("CoinController: coinPrefab이 지정되지 않았습니다.");
+        if (!EnsureCoinInstance())
             return;
-        }
 
-        // 게임 시작 시 코인을 한 번 생성해두고, 위치/활성 여부만 관리합니다.
-        _coinInstance = Instantiate(coinPrefab, transform);
-        _coinInstance.SetActive(false);
+        StartCoinPlacement();
+    }
 
-        StartCoroutine(SetupAndRunRoutine());
+    public void StartCoinPlacement()
+    {
+        if (!EnsureCoinInstance())
+            return;
+
+        if (_setupCoroutine != null)
+            StopCoroutine(_setupCoroutine);
+
+        _setupCoroutine = StartCoroutine(SetupAndRunRoutine());
     }
 
     private IEnumerator SetupAndRunRoutine()
@@ -51,16 +56,49 @@ public class CoinController : MonoBehaviour
         }
 
         MoveCoinToRandomCell();
+        _setupCoroutine = null;
     }
 
     private void OnDisable()
     {
+        ResetControllerState();
+    }
+
+    public void ResetControllerState()
+    {
         CleanupCurrentCellSubscription();
+
+        if (_setupCoroutine != null)
+            StopCoroutine(_setupCoroutine);
 
         if (_timeoutCoroutine != null)
             StopCoroutine(_timeoutCoroutine);
 
+        _setupCoroutine = null;
         _timeoutCoroutine = null;
+
+        if (_coinInstance != null)
+            _coinInstance.SetActive(false);
+
+        _cellController = null;
+    }
+
+    private bool EnsureCoinInstance()
+    {
+        if (coinPrefab == null)
+        {
+            Debug.LogError("CoinController: coinPrefab이 지정되지 않았습니다.");
+            return false;
+        }
+
+        if (_coinInstance == null)
+        {
+            // 코인은 1회 생성 후 재사용합니다.
+            _coinInstance = Instantiate(coinPrefab, transform);
+            _coinInstance.SetActive(false);
+        }
+
+        return true;
     }
 
     private void CleanupCurrentCellSubscription()

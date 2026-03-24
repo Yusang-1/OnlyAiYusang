@@ -16,41 +16,15 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private bool parentEnemiesUnderSelf = true;
     [SerializeField] private bool usePrefabRotation = true;
 
-    private GroundGridGenerator _gridGenerator;
-
-    private void Start()
+    public void ClearSpawnedEnemies()
     {
-        _gridGenerator = FindFirstObjectByType<GroundGridGenerator>();
-        if (_gridGenerator == null)
+        for (int i = transform.childCount - 1; i >= 0; i--)
         {
-            Debug.LogError("EnemySpawner: GroundGridGenerator를 찾지 못했습니다.");
-            return;
+            Destroy(transform.GetChild(i).gameObject);
         }
-
-        if (_gridGenerator.IsBuilt && _gridGenerator.Cells != null)
-        {
-            SpawnEnemies(_gridGenerator.Cells);
-            return;
-        }
-
-        _gridGenerator.GridBuilt += OnGridBuilt;
     }
 
-    private void OnDestroy()
-    {
-        if (_gridGenerator != null)
-            _gridGenerator.GridBuilt -= OnGridBuilt;
-    }
-
-    private void OnGridBuilt(Cell[,] cells)
-    {
-        if (_gridGenerator != null)
-            _gridGenerator.GridBuilt -= OnGridBuilt;
-
-        SpawnEnemies(cells);
-    }
-
-    private void SpawnEnemies(Cell[,] cells)
+    public void SpawnEnemiesFromGrid(Cell[,] cells)
     {
         if (enemyPrefab == null)
         {

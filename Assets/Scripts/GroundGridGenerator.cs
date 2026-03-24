@@ -23,7 +23,7 @@ public class GroundGridGenerator : MonoBehaviour
 
     private bool _isBuilt;
 
-    private void Start()
+    public void GenerateGrid()
     {
         if (cellPrefab == null)
         {
@@ -31,19 +31,25 @@ public class GroundGridGenerator : MonoBehaviour
             return;
         }
 
+        ClearGrid();
         BuildGrid();
         _isBuilt = true;
         GridBuilt?.Invoke(_cells);
     }
 
-    private void BuildGrid()
+    public void ClearGrid()
     {
-        // 기존 자식 제거(재생 중에만)
         for (int i = transform.childCount - 1; i >= 0; i--)
         {
             Destroy(transform.GetChild(i).gameObject);
         }
 
+        _cells = null;
+        _isBuilt = false;
+    }
+
+    private void BuildGrid()
+    {
         _cells = new Cell[width, depth];
 
         for (int x = 0; x < width; x++)
