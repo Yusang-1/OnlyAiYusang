@@ -385,7 +385,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   coinPrefab: {fileID: 3046790568360115009, guid: d5788130135e4724f8b0b8ecf49e1fe9, type: 3}
-  playerScoreData: {fileID: 0}
+  playerScoreData: {fileID: 11400000, guid: 0902720d3cde49545964d792f256b99a, type: 2}
   scorePerCoin: 1
   yOffset: 1.05
   placeOnAvailableCells: 1
