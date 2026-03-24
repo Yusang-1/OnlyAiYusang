@@ -1,7 +1,11 @@
+using System;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public event Action GameStarted;
+    public event Action GameOvered;
+
     [Header("References")]
     [SerializeField] private GroundGridGenerator groundGridGenerator;
     [SerializeField] private EnemySpawner enemySpawner;
@@ -50,6 +54,7 @@ public class GameManager : MonoBehaviour
             coinController.StartCoinPlacement();
 
         _isGameStarted = true;
+        GameStarted?.Invoke();
     }
 
     public void GameOver()
@@ -70,6 +75,7 @@ public class GameManager : MonoBehaviour
             groundGridGenerator.ClearGrid();
 
         _isGameStarted = false;
+        GameOvered?.Invoke();
     }
 
     public void RestartGame()
