@@ -6,6 +6,10 @@ public class CoinController : MonoBehaviour
     [Header("Coin Prefab")]
     [SerializeField] private GameObject coinPrefab;
 
+    [Header("Score")]
+    [SerializeField] private PlayerScoreData playerScoreData;
+    [SerializeField] private int scorePerCoin = 1;
+
     [Header("Placement")]
     [SerializeField] private float yOffset = 0.05f;
     [SerializeField] private bool placeOnAvailableCells = true;
@@ -191,6 +195,9 @@ public class CoinController : MonoBehaviour
     {
         if (cell == null || cell != _currentCell)
             return;
+
+        if (playerScoreData != null)
+            playerScoreData.AddScore(scorePerCoin);
 
         // 획득 직후에는 바로 다른 위치로 이동합니다.
         if (_coinInstance != null)
