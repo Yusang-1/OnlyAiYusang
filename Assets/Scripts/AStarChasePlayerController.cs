@@ -19,6 +19,7 @@ public class AStarChasePlayerController : EnemyControllerBase
     [SerializeField] private Transform playerTransform;
 
     private PlayerController _playerController;
+    private GameManager _gameManager;
 
     // 하드코딩 숫자를 상수로 분리 (규칙 준수)
     private const float MinInputSqrMagnitude = 0.01f;
@@ -49,6 +50,17 @@ public class AStarChasePlayerController : EnemyControllerBase
             return false;
 
         nextCell = GetNextCellByAStar(startCell, goalCell);
+
+        // 적이 플레이어가 있는 셀로 "이동 시도"하는 순간 패배 처리합니다.
+        if (nextCell != null && nextCell == goalCell)
+        {
+            if (_gameManager == null)
+                _gameManager = FindFirstObjectByType<GameManager>();
+
+            if (_gameManager != null)
+                _gameManager.GameOver();
+        }
+
         return nextCell != null && nextCell.IsAvailable;
     }
 

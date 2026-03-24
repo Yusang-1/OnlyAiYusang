@@ -15,13 +15,18 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private float yOffset = 0f;
     [SerializeField] private bool parentEnemiesUnderSelf = true;
     [SerializeField] private bool usePrefabRotation = true;
+    private readonly List<GameObject> _spawnedEnemies = new List<GameObject>();
 
     public void ClearSpawnedEnemies()
     {
-        for (int i = transform.childCount - 1; i >= 0; i--)
+        for (int i = _spawnedEnemies.Count - 1; i >= 0; i--)
         {
-            Destroy(transform.GetChild(i).gameObject);
+            GameObject enemy = _spawnedEnemies[i];
+            if (enemy != null)
+                Destroy(enemy);
         }
+
+        _spawnedEnemies.Clear();
     }
 
     public void SpawnEnemiesFromGrid(Cell[,] cells)
@@ -65,10 +70,14 @@ public class EnemySpawner : MonoBehaviour
 
             Vector3 pos = cell.transform.position + Vector3.up * yOffset;
 
+            GameObject spawnedEnemy;
             if (parentEnemiesUnderSelf)
-                Instantiate(enemyPrefab, pos, rot, parent);
+                spawnedEnemy = Instantiate(enemyPrefab, pos, rot, parent);
             else
-                Instantiate(enemyPrefab, pos, rot);
+                spawnedEnemy = Instantiate(enemyPrefab, pos, rot);
+
+            if (spawnedEnemy != null)
+                _spawnedEnemies.Add(spawnedEnemy);
 
             spawnedCount++;
         }
