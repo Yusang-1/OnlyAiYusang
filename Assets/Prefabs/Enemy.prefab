@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2988082420226849753}
   - component: {fileID: 3576125719782338978}
   - component: {fileID: 2017911653466804098}
+  - component: {fileID: 732603350968626609}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -169,9 +170,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35dbcfc9328836f40ac25b2d1acb908d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyController: {fileID: 0}
+  visualColorStateApplier: {fileID: 732603350968626609}
+  enemyController: {fileID: 3576125719782338978}
   cellController: {fileID: 0}
   playerTransform: {fileID: 0}
   chaseEnterDistance: 6
   chaseExitDistance: 9
   decisionIntervalSeconds: 0.15
+  debugLogIsPlayerWithinSteps: 1
+  debugLogIsPlayerWithinStepsMinIntervalSeconds: 0.01
+--- !u!114 &732603350968626609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9178467664176746402}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f28061e4df0668143b4c780f70906b8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  visualColorOverrides:
+  - stateId: 1
+    color: {r: 0, g: 0, b: 0, a: 1}

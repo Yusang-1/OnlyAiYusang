@@ -8,6 +8,15 @@ using UnityEngine;
 /// </summary>
 public class Enemy : MonoBehaviour
 {
+    public enum EnemyVisualStateId
+    {
+        Wait,
+        Chase
+    }
+
+    [Header("Visual")]
+    [SerializeField] private EnemyVisualColorStateApplier visualColorStateApplier;
+
     [Header("References")]
     [SerializeField] private EnemyControllerBase enemyController;
     [SerializeField] private CellController cellController;
@@ -45,6 +54,7 @@ public class Enemy : MonoBehaviour
         public void Enter()
         {
             _enemy.enemyController?.SetRuntimeAIEnabled(false);
+            _enemy.visualColorStateApplier?.ApplyState(EnemyVisualStateId.Wait);
         }
 
         public void Tick()
@@ -70,6 +80,7 @@ public class Enemy : MonoBehaviour
         public void Enter()
         {
             _enemy.enemyController?.SetRuntimeAIEnabled(true);
+            _enemy.visualColorStateApplier?.ApplyState(EnemyVisualStateId.Chase);
         }
 
         public void Tick()
@@ -101,6 +112,10 @@ public class Enemy : MonoBehaviour
             if (player != null)
                 playerTransform = player.transform;
         }
+
+        // 인스펙터 미설정 시, 자식 컴포넌트를 자동 탐색합니다.
+        if (visualColorStateApplier == null)
+            visualColorStateApplier = GetComponentInChildren<EnemyVisualColorStateApplier>(true);
     }
 
     private void Start()
