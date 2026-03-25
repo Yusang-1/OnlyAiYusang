@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private CellController cellController;
     [SerializeField] private CoinController coinController;
     [SerializeField] private SaveManager saveManager;
+    [SerializeField] private PlayerController playerController;
     [SerializeField] private bool autoStartOnAwake = true;
 
     private bool _isGameStarted;
@@ -70,6 +71,10 @@ public class GameManager : MonoBehaviour
     {
         if (!_isGameStarted)
             return;
+
+        // 게임 오버 시 플레이어를 기본 좌표로 리셋합니다.
+        var pc = playerController != null ? playerController : FindFirstObjectByType<PlayerController>();
+        pc?.ResetToPosition(new Vector3(0f, 1f, 0f));
 
         SaveManager sm = saveManager != null ? saveManager : SaveManager.Instance;
         if (sm != null)

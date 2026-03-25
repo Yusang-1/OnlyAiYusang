@@ -173,5 +173,5 @@ MonoBehaviour:
   cellController: {fileID: 0}
   playerTransform: {fileID: 0}
   chaseEnterDistance: 6
-  chaseExitDistance: 8
+  chaseExitDistance: 9
   decisionIntervalSeconds: 0.15

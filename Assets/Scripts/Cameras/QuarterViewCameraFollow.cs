@@ -12,6 +12,13 @@ public class QuarterViewCameraFollow : MonoBehaviour
     [Tooltip("참조가 없으면 씬에서 자동으로 찾습니다.")]
     [SerializeField] private GameManager gameManager;
 
+    [Header("State Transition")]
+    [Tooltip("GameOver 시 기본 카메라 위치/회전으로 돌아갈 때의 전환 시간(초)입니다.")]
+    [SerializeField] private float returnToDefaultDuration = 0.35f;
+
+    [Tooltip("GameStart 직후 카메라가 즉시 점프하는 것을 방지하기 위해, 초기 스무딩을 강제할 시간(초)입니다.")]
+    [SerializeField] private float startFollowSmoothingOverrideDuration = 0.35f;
+
     [Header("Target")]
     [Tooltip("null이면 자동으로 PlayerController를 찾아서 사용합니다.")]
     [SerializeField] private Transform target;
@@ -48,6 +55,13 @@ public class QuarterViewCameraFollow : MonoBehaviour
     private Vector3 _defaultPosition;
     private Quaternion _defaultRotation;
     private bool _isFollowing;
+
+    private bool _isReturningToDefault;
+    private float _returnElapsed;
+    private Vector3 _returnFromPosition;
+    private Quaternion _returnFromRotation;
+
+    private float _smoothFollowOverrideEndsAt;
 
     private void Awake()
     {
@@ -100,6 +114,13 @@ public class QuarterViewCameraFollow : MonoBehaviour
         if (!followOnlyWhenGameStarted)
             return;
 
+        // GameOver 복귀 전환 중이면 중단하고 바로 따라가기 시작합니다.
+        _isReturningToDefault = false;
+        _returnElapsed = 0f;
+
+        // useSmoothing이 꺼져있어도 시작 직후에는 보간/스무딩을 강제합니다.
+        _smoothFollowOverrideEndsAt = Time.time + Mathf.Max(startFollowSmoothingOverrideDuration, 0f);
+
         _isFollowing = true;
     }
 
@@ -108,17 +129,37 @@ public class QuarterViewCameraFollow : MonoBehaviour
         if (!followOnlyWhenGameStarted)
             return;
 
-        _isFollowing = false;
+        _returnFromPosition = transform.position;
+        _returnFromRotation = transform.rotation;
 
-        // GameOver에서는 기본 카메라 위치/회전으로 즉시 되돌립니다.
-        transform.position = _defaultPosition;
-        transform.rotation = _defaultRotation;
+        _isFollowing = false;
+        _smoothFollowOverrideEndsAt = 0f;
+
+        // GameOver에서는 기본 카메라 위치/회전으로 "부드럽게" 되돌립니다.
+        _isReturningToDefault = true;
+        _returnElapsed = 0f;
     }
 
     private void LateUpdate()
     {
         if (followOnlyWhenGameStarted && !_isFollowing)
+        {
+            if (_isReturningToDefault)
+            {
+                float duration = Mathf.Max(returnToDefaultDuration, 0.0001f);
+                _returnElapsed += Time.deltaTime;
+                float t = Mathf.Clamp01(_returnElapsed / duration);
+                float easedT = Mathf.SmoothStep(0f, 1f, t);
+
+                transform.position = Vector3.Lerp(_returnFromPosition, _defaultPosition, easedT);
+                transform.rotation = Quaternion.Slerp(_returnFromRotation, _defaultRotation, easedT);
+
+                if (t >= 1f)
+                    _isReturningToDefault = false;
+            }
+
             return;
+        }
 
         if (_resolvedTarget == null)
         {
@@ -144,7 +185,8 @@ public class QuarterViewCameraFollow : MonoBehaviour
 
         Quaternion desiredRot = Quaternion.LookRotation(targetPos - desiredPos, Vector3.up);
 
-        if (!useSmoothing)
+        bool smoothingThisFrame = useSmoothing || Time.time < _smoothFollowOverrideEndsAt;
+        if (!smoothingThisFrame)
         {
             transform.position = desiredPos;
             transform.rotation = desiredRot;

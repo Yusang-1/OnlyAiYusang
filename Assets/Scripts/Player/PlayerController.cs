@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     private BoxCollider _boxCollider;
     private bool _isRolling;
     private float _lastRollEndTime;
+    private Coroutine _rollCoroutine;
 
     // 하드코딩 숫자를 상수로 분리 (규칙 준수)
     private const float RollAngleDegrees = 90f;
@@ -93,7 +94,7 @@ public class PlayerController : MonoBehaviour
         // 같은 프레임에 Started 이벤트가 중복 들어올 경우 다중 코루틴이 생길 수 있음.
         // 이를 방지하기 위해 선점 처리한다.
         _isRolling = true;
-        StartCoroutine(RollCoroutine(direction, targetCell));
+        _rollCoroutine = StartCoroutine(RollCoroutine(direction, targetCell));
     }
 
     /// <summary>
@@ -163,7 +164,28 @@ public class PlayerController : MonoBehaviour
         {
             _lastRollEndTime = Time.time;
             _isRolling = false;
+            _rollCoroutine = null;
         }
+    }
+
+    /// <summary>
+    /// GameOver 등에서 플레이어를 지정 위치로 리셋합니다.
+    /// </summary>
+    public void ResetToPosition(Vector3 position)
+    {
+        // 진행 중인 구르기 코루틴을 중단하고 즉시 좌표를 리셋합니다.
+        if (_rollCoroutine != null)
+        {
+            StopCoroutine(_rollCoroutine);
+            _rollCoroutine = null;
+        }
+
+        _isRolling = false;
+
+        // rollDelay 때문에 바로 다음 입력이 막히지 않도록 마지막 롤 종료 시간을 보정합니다.
+        _lastRollEndTime = Time.time - rollDelay;
+
+        transform.SetPositionAndRotation(position, Quaternion.identity);
     }
 
     /// <summary>

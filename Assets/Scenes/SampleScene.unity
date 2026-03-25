@@ -556,6 +556,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eb9eb6fcf41c0b46b67b862d92cb7d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  followOnlyWhenGameStarted: 1
+  gameManager: {fileID: 0}
+  returnToDefaultDuration: 0.95
+  startFollowSmoothingOverrideDuration: 0.95
   target: {fileID: 0}
   lookAtOffset: {x: 0, y: 0.5, z: 0}
   distance: 5.5
@@ -1490,6 +1494,7 @@ MonoBehaviour:
   cellController: {fileID: 1150971409}
   coinController: {fileID: 256177106}
   saveManager: {fileID: 1809253898}
+  playerController: {fileID: 0}
   autoStartOnAwake: 0
 --- !u!4 &1527021276
 Transform:
