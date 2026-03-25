@@ -172,6 +172,6 @@ MonoBehaviour:
   enemyController: {fileID: 0}
   cellController: {fileID: 0}
   playerTransform: {fileID: 0}
-  chaseEnterDistance: 4
-  chaseExitDistance: 5
+  chaseEnterDistance: 6
+  chaseExitDistance: 7
   decisionIntervalSeconds: 0.2

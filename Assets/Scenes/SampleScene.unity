@@ -558,7 +558,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   lookAtOffset: {x: 0, y: 0.5, z: 0}
-  distance: 10
+  distance: 5.5
   yawDegrees: 180
   pitchDegrees: 45
   useSmoothing: 1
@@ -1417,8 +1417,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15c638b9fd58695448ca45558820eb38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 20
-  depth: 20
+  width: 12
+  depth: 12
   spacing: 1
   cellY: 0
   originCellX: 1
@@ -1489,6 +1489,7 @@ MonoBehaviour:
   enemySpawner: {fileID: 884906957}
   cellController: {fileID: 1150971409}
   coinController: {fileID: 256177106}
+  saveManager: {fileID: 0}
   autoStartOnAwake: 0
 --- !u!4 &1527021276
 Transform:

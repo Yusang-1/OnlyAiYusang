@@ -5,8 +5,6 @@ using UnityEngine;
     menuName = "OnlyAi/Score/Player Score Data")]
 public class PlayerScoreData : ScriptableObject
 {
-    private const string BestScoreKey = "OnlyAi.BestScore";
-
     [Header("Runtime Scores")]
     [SerializeField] private int currentScore;
     [SerializeField] private int bestScore;
@@ -17,8 +15,16 @@ public class PlayerScoreData : ScriptableObject
 
     private void OnEnable()
     {
-        LoadBestScore();
+        // 저장/복구는 SaveSystem에서 담당합니다.
         currentScore = 0;
+        bestScore = Mathf.Max(0, bestScore);
+        RaiseScoreChanged();
+    }
+
+    public void SetScores(int currentScoreValue, int bestScoreValue)
+    {
+        currentScore = Mathf.Max(0, currentScoreValue);
+        bestScore = Mathf.Max(0, bestScoreValue);
         RaiseScoreChanged();
     }
 
@@ -62,18 +68,6 @@ public class PlayerScoreData : ScriptableObject
             return;
 
         bestScore = currentScore;
-        SaveBestScore();
-    }
-
-    private void LoadBestScore()
-    {
-        bestScore = Mathf.Max(0, PlayerPrefs.GetInt(BestScoreKey, 0));
-    }
-
-    private void SaveBestScore()
-    {
-        PlayerPrefs.SetInt(BestScoreKey, bestScore);
-        PlayerPrefs.Save();
     }
 
     private void RaiseScoreChanged()
