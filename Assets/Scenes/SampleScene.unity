@@ -1489,7 +1489,7 @@ MonoBehaviour:
   enemySpawner: {fileID: 884906957}
   cellController: {fileID: 1150971409}
   coinController: {fileID: 256177106}
-  saveManager: {fileID: 0}
+  saveManager: {fileID: 1809253898}
   autoStartOnAwake: 0
 --- !u!4 &1527021276
 Transform:
@@ -1722,6 +1722,66 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1809253897
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1809253900}
+  - component: {fileID: 1809253898}
+  - component: {fileID: 1809253899}
+  m_Layer: 0
+  m_Name: SaveManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1809253898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1809253897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56c4cbce50b456443abe7d622a79cd02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerPrefsKey: OnlyAi.SaveData
+--- !u!114 &1809253899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1809253897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01047034f9107d34eb93bec183a28cdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scoreData: {fileID: 11400000, guid: 0902720d3cde49545964d792f256b99a, type: 2}
+  restoreCurrentScoreFromLastScore: 0
+--- !u!4 &1809253900
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1809253897}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 519.44775, y: 268.74527, z: 36.954853}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1846198611
 GameObject:
   m_ObjectHideFlags: 0
@@ -1785,5 +1845,6 @@ SceneRoots:
   - {fileID: 256177107}
   - {fileID: 884906958}
   - {fileID: 1527021276}
+  - {fileID: 1809253900}
   - {fileID: 202035828}
   - {fileID: 1735088592}
