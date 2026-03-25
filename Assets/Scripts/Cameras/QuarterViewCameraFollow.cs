@@ -5,6 +5,13 @@ using UnityEngine;
 /// </summary>
 public class QuarterViewCameraFollow : MonoBehaviour
 {
+    [Header("Game State")]
+    [Tooltip("GameStart 동안에만 카메라를 따라가도록 합니다.")]
+    [SerializeField] private bool followOnlyWhenGameStarted = true;
+
+    [Tooltip("참조가 없으면 씬에서 자동으로 찾습니다.")]
+    [SerializeField] private GameManager gameManager;
+
     [Header("Target")]
     [Tooltip("null이면 자동으로 PlayerController를 찾아서 사용합니다.")]
     [SerializeField] private Transform target;
@@ -38,13 +45,26 @@ public class QuarterViewCameraFollow : MonoBehaviour
     [SerializeField] private float targetReacquireIntervalSeconds = 0.5f;
     private float _nextReacquireTime;
 
+    private Vector3 _defaultPosition;
+    private Quaternion _defaultRotation;
+    private bool _isFollowing;
+
     private void Awake()
     {
+        // GameOver 시 되돌릴 기본 카메라 Transform(씬에 세팅된 값)을 캐시합니다.
+        _defaultPosition = transform.position;
+        _defaultRotation = transform.rotation;
+
         if (target != null)
         {
             _resolvedTarget = target;
             return;
         }
+
+        if (gameManager == null)
+            gameManager = FindFirstObjectByType<GameManager>();
+
+        _isFollowing = !followOnlyWhenGameStarted || (gameManager != null && gameManager.IsGameStarted);
 
         if (!autoFindPlayerController)
             return;
@@ -54,8 +74,52 @@ public class QuarterViewCameraFollow : MonoBehaviour
             _resolvedTarget = player.transform;
     }
 
+    private void OnEnable()
+    {
+        if (gameManager == null)
+            gameManager = FindFirstObjectByType<GameManager>();
+
+        if (gameManager == null)
+            return;
+
+        gameManager.GameStarted += HandleGameStarted;
+        gameManager.GameOvered += HandleGameOvered;
+    }
+
+    private void OnDisable()
+    {
+        if (gameManager == null)
+            return;
+
+        gameManager.GameStarted -= HandleGameStarted;
+        gameManager.GameOvered -= HandleGameOvered;
+    }
+
+    private void HandleGameStarted()
+    {
+        if (!followOnlyWhenGameStarted)
+            return;
+
+        _isFollowing = true;
+    }
+
+    private void HandleGameOvered()
+    {
+        if (!followOnlyWhenGameStarted)
+            return;
+
+        _isFollowing = false;
+
+        // GameOver에서는 기본 카메라 위치/회전으로 즉시 되돌립니다.
+        transform.position = _defaultPosition;
+        transform.rotation = _defaultRotation;
+    }
+
     private void LateUpdate()
     {
+        if (followOnlyWhenGameStarted && !_isFollowing)
+            return;
+
         if (_resolvedTarget == null)
         {
             if (!autoFindPlayerController)

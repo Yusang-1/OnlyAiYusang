@@ -16,6 +16,8 @@ public class GameManager : MonoBehaviour
 
     private bool _isGameStarted;
 
+    public bool IsGameStarted => _isGameStarted;
+
     private void Awake()
     {
         if (autoStartOnAwake)
