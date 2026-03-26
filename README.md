@@ -1,4 +1,4 @@
-# OnlyAiYusang
+# Move Code
 
 ### 프로젝트 설명
 UnityEngine과 Cursor ai를 사용해 자연어로만 개발한 프로젝트입니다.
