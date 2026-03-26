@@ -96,7 +96,10 @@ public class SaveManager : MonoBehaviour
     public bool LoadFromPlayerPrefs()
     {
         if (!PlayerPrefs.HasKey(playerPrefsKey))
+        {
+            RestoreDefaults();
             return false;
+        }
 
         string wrapperJson = PlayerPrefs.GetString(playerPrefsKey, "");
         if (string.IsNullOrEmpty(wrapperJson))
@@ -126,5 +129,17 @@ public class SaveManager : MonoBehaviour
         }
 
         return true;
+    }
+
+    private void RestoreDefaults()
+    {
+        // 저장 데이터가 없으면 각 saveable이 정의한 기본값으로 복구합니다.
+        foreach (var kv in _saveables)
+        {
+            if (kv.Value == null)
+                continue;
+
+            kv.Value.RestoreFromJson(string.Empty);
+        }
     }
 }

@@ -1494,7 +1494,8 @@ MonoBehaviour:
   cellController: {fileID: 1150971409}
   coinController: {fileID: 256177106}
   saveManager: {fileID: 1809253898}
-  playerController: {fileID: 0}
+  playerController: {fileID: 509778547}
+  playerScoreData: {fileID: 11400000, guid: 0902720d3cde49545964d792f256b99a, type: 2}
   autoStartOnAwake: 0
 --- !u!4 &1527021276
 Transform:

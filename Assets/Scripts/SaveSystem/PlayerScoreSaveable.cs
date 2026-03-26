@@ -72,16 +72,28 @@ public class PlayerScoreSaveable : MonoBehaviour, ISaveable
             return;
 
         if (string.IsNullOrEmpty(json))
+        {
+            ApplyDefaultScores();
             return;
+        }
 
         PlayerScoreSaveState state = JsonUtility.FromJson<PlayerScoreSaveState>(json);
         if (state == null)
+        {
+            ApplyDefaultScores();
             return;
+        }
 
         int restoredBest = Mathf.Max(0, state.bestScore);
         int restoredCurrent = restoreCurrentScoreFromLastScore ? Mathf.Max(0, state.lastScore) : 0;
 
         // 새 게임 시작 시 current는 보통 0으로, best는 복구합니다.
         scoreData.SetScores(restoredCurrent, restoredBest);
+    }
+
+    private void ApplyDefaultScores()
+    {
+        // 로드 가능한 점수 데이터가 없다면 기본값으로 강제 초기화합니다.
+        scoreData.SetScores(0, 0);
     }
 }

@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private CoinController coinController;
     [SerializeField] private SaveManager saveManager;
     [SerializeField] private PlayerController playerController;
+    [SerializeField] private PlayerScoreData playerScoreData;
     [SerializeField] private bool autoStartOnAwake = true;
 
     private bool _isGameStarted;
@@ -21,6 +22,12 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        SaveManager sm = saveManager != null ? saveManager : SaveManager.Instance;
+        if (sm != null)
+            sm.LoadFromPlayerPrefs();
+        else
+            Debug.LogWarning("GameManager: SaveManager를 찾지 못했습니다.");
+
         if (autoStartOnAwake)
         {
             GameStart();
@@ -31,12 +38,6 @@ public class GameManager : MonoBehaviour
     {
         if (_isGameStarted)
             return;
-
-        SaveManager sm = saveManager != null ? saveManager : SaveManager.Instance;
-        if (sm != null)
-            sm.LoadFromPlayerPrefs();
-        else
-            Debug.LogWarning("GameManager: SaveManager를 찾지 못했습니다.");
 
         if (groundGridGenerator == null)
         {
@@ -79,6 +80,9 @@ public class GameManager : MonoBehaviour
         SaveManager sm = saveManager != null ? saveManager : SaveManager.Instance;
         if (sm != null)
             sm.Save();
+
+        if (playerScoreData != null)
+            playerScoreData.ResetCurrentScore();
 
         if (cellController != null)
             cellController.ResetControllerState();
