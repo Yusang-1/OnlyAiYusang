@@ -4,6 +4,9 @@
 UnityEngine과 Cursor ai를 사용해 자연어로만 개발한 프로젝트입니다.
 일부 인스펙터 창 조정은 직접 했습니다.
 
+### 플레이 링크
+https://play.unity.com/en/games/60b78a41-71ee-4217-b020-533ee52ee295/move-code
+
 ### 개발인원
 1인 개발
 
