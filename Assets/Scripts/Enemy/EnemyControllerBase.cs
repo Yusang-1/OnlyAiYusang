@@ -24,6 +24,8 @@ public abstract class EnemyControllerBase : MonoBehaviour
     // false이면 이동(새 롤)만 막고, 현재 굴림은 끝나도록(_isRolling 기준) 둡니다.
     private bool _runtimeAIEnabled = false;
 
+    public bool IsRolling => _isRolling;
+
     public void SetRuntimeAIEnabled(bool enabled)
     {
         _runtimeAIEnabled = enabled;

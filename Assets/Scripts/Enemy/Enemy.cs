@@ -34,6 +34,9 @@ public class Enemy : MonoBehaviour
 
     private int _nextDecisionFrame;
     private IEnemyState _currentState;
+    private Cell _cachedEnemyCell;
+    private Cell _cachedPlayerCell;
+    private PlayerController _playerController;
 
     private interface IEnemyState
     {
@@ -110,7 +113,15 @@ public class Enemy : MonoBehaviour
         {
             var player = FindFirstObjectByType<PlayerController>();
             if (player != null)
+            {
                 playerTransform = player.transform;
+                _playerController = player;
+            }
+        }
+        else if (_playerController == null)
+        {
+            _playerController = playerTransform.GetComponent<PlayerController>() ??
+                                playerTransform.GetComponentInParent<PlayerController>();
         }
 
         // 인스펙터 미설정 시, 자식 컴포넌트를 자동 탐색합니다.
@@ -160,10 +171,10 @@ public class Enemy : MonoBehaviour
         if (cellController == null || playerTransform == null)
             return false;
 
-        if (!cellController.TryGetCellAtWorldPosition(transform.position, out Cell enemyCell))
+        if (!TryGetEnemyCellForDistanceCheck(out Cell enemyCell))
             return false;
 
-        if (!cellController.TryGetCellAtWorldPosition(playerTransform.position, out Cell playerCell))
+        if (!TryGetPlayerCellForDistanceCheck(out Cell playerCell))
             return false;
 
         if (enemyCell == playerCell)
@@ -208,5 +219,45 @@ public class Enemy : MonoBehaviour
         }
 
         return false;
+    }
+
+    private bool TryGetPlayerCellForDistanceCheck(out Cell playerCell)
+    {
+        playerCell = null;
+
+        // 롤링 중에는 playerTransform.position이 셀 중심에서 벗어나
+        // 셀 매핑이 흔들릴 수 있으므로, 이전에 매핑된 셀을 유지합니다.
+        if (_playerController != null && _playerController.IsRolling && _cachedPlayerCell != null)
+        {
+            playerCell = _cachedPlayerCell;
+            return true;
+        }
+
+        if (!cellController.TryGetCellAtWorldPosition(playerTransform.position, out Cell currentCell))
+            return false;
+
+        _cachedPlayerCell = currentCell;
+        playerCell = currentCell;
+        return true;
+    }
+
+    private bool TryGetEnemyCellForDistanceCheck(out Cell enemyCell)
+    {
+        enemyCell = null;
+
+        // 롤링 중에는 transform.position이 셀 중심에서 벗어나
+        // 셀 매핑이 흔들릴 수 있으므로, 이전에 매핑된 셀을 유지합니다.
+        if (enemyController != null && enemyController.IsRolling && _cachedEnemyCell != null)
+        {
+            enemyCell = _cachedEnemyCell;
+            return true;
+        }
+
+        if (!cellController.TryGetCellAtWorldPosition(transform.position, out Cell currentCell))
+            return false;
+
+        _cachedEnemyCell = currentCell;
+        enemyCell = currentCell;
+        return true;
     }
 }

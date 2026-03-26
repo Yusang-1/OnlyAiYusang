@@ -20,6 +20,8 @@ public class PlayerController : MonoBehaviour
     private float _lastRollEndTime;
     private Coroutine _rollCoroutine;
 
+    public bool IsRolling => _isRolling;
+
     // 하드코딩 숫자를 상수로 분리 (규칙 준수)
     private const float RollAngleDegrees = 90f;
     private const float HalfFactor = 0.5f;

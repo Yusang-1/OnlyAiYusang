@@ -18,6 +18,10 @@ public class Cell : MonoBehaviour
 
     public event Action<Cell, bool> AvailabilityChanged;
 
+    // SetAvailable(secondsUntilAvailable)을 호출했을 때 복구까지 걸리는 시간(초)을 알리기 위한 이벤트입니다.
+    // CellMovementController 같은 외부 시스템이 "활성화되는 시간"과 "원위치 복귀 시간"을 동기화할 수 있습니다.
+    public event Action<Cell, float> AvailabilityRestoreScheduled;
+
     // coin 상태 저장 (CoinController가 추가/제거, PlayerController가 획득)
     private bool _hasCoin;
 
@@ -51,6 +55,9 @@ public class Cell : MonoBehaviour
     // 셀 접근 가능 여부를 변경하는 공용 메서드
     public void SetAvailable(float secondsUntilAvailable)
     {
+        float delaySeconds = Mathf.Max(secondsUntilAvailable, ZeroSeconds);
+        AvailabilityRestoreScheduled?.Invoke(this, delaySeconds);
+
         // 요청사항: SetAvailable 호출 시 isAvailable은 'false'로만 바뀌며,
         // 일정 시간 이후 자동으로 true로 복구된다.
         IsAvailable = false;
@@ -58,14 +65,13 @@ public class Cell : MonoBehaviour
         if (_restoreCoroutine != null)
             StopCoroutine(_restoreCoroutine);
 
-        _restoreCoroutine = StartCoroutine(RestoreAvailableAfterSeconds(secondsUntilAvailable));
+        _restoreCoroutine = StartCoroutine(RestoreAvailableAfterSeconds(delaySeconds));
     }
 
     private const float ZeroSeconds = 0f;
 
-    private IEnumerator RestoreAvailableAfterSeconds(float secondsUntilAvailable)
+    private IEnumerator RestoreAvailableAfterSeconds(float delaySeconds)
     {
-        float delaySeconds = Mathf.Max(secondsUntilAvailable, ZeroSeconds);
         if (delaySeconds > ZeroSeconds)
             yield return new WaitForSeconds(delaySeconds);
 
